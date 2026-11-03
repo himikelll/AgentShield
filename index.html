@@ -156,6 +156,10 @@ if(total===1)history.innerHTML="";
 let row=history.insertRow(0);
 row.innerHTML="<td>"+amount+" NEAR</td><td>"+address.slice(0,12)+"...</td><td class='status "+(decision==="APPROVED"?"green":"red")+"'>"+decision+"</td>";
 }
+document.getElementById("limit").value = maxLimit;
+document.getElementById("recipient").value = approvedAddress;
+  
 </script>
+  
 </body>
   </html>
