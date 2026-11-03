@@ -102,7 +102,7 @@ let blocked = Number(localStorage.getItem("agentShieldBlocked")) || 0;
 let total = Number(localStorage.getItem("agentShieldTotal")) || 0;
 
 let maxLimit = Number(localStorage.getItem("agentShieldMaxLimit")) || 10;
-let approvedAddress = localStorage.getItem("agentShieldApprovedAddress") || "";
+let approvedAddress = "";
 
 let transactions = JSON.parse(localStorage.getItem("agentShieldHistory") || "[]");
 
