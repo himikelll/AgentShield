@@ -127,6 +127,9 @@ return;
 }
 
 total++;
+  
+localStorage.setItem("agentShieldTotal", total);
+localStorage.setItem("agentShieldApproved", approved);
 let decision="APPROVED";
 let reason="Transaction passed the configured security checks.";
 
