@@ -97,9 +97,9 @@ footer{text-align:center;color:#75847a;padding:30px;font-size:12px}
 <footer>AGENTSHIELD | Protecting users from unsafe AI transactions.</footer>
 
 <script>
-let approved=0;
-let blocked=0;
-let total=0;
+let approved=Number(localStorage.getItem("agentShieldApproved")) || 0;
+let blocked=Number(localStorage.getItem("agentShieldBlocked")) || 0;
+let total=Number(localStorage.getItem("agentShieldTotal")) || 0;
 let maxLimit=Number(localStorage.getItem("agentShieldMaxLimit")) || 10;
 let approvedAddress=localStorage.getItem("agentShieldApprovedAddress") || "";
 
@@ -140,12 +140,13 @@ reason="Transaction exceeds your maximum spending limit of "+maxLimit+" NEAR.";
 decision="BLOCKED";
 reason="Recipient is not on your approved address list.";
 }
-
 if(decision==="APPROVED"){
 approved++;
-result.innerHTML="<span class='green'>TRANSACTION APPROVED</span><br>"+reason+"<br><br>This is a simulation. No funds were transferred.";
+localStorage.setItem("agentShieldApproved", approved);
 }else{
 blocked++;
+localStorage.setItem("agentShieldBlocked", blocked);
+}
 result.innerHTML="<span class='red'>TRANSACTION BLOCKED</span><br>"+reason+"<br><br>This is a simulation. No funds were transferred.";
 }
 
@@ -161,6 +162,10 @@ row.innerHTML="<td>"+amount+" NEAR</td><td>"+address.slice(0,12)+"...</td><td cl
 }
 document.getElementById("limit").value = maxLimit;
 document.getElementById("recipient").value = approvedAddress;
+
+document.getElementById("total").textContent = total;
+document.getElementById("approved").textContent = approved;
+document.getElementById("blocked").textContent = blocked;
   
 </script>
   
