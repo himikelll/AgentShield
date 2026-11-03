@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgentShield | AI Wallet Security</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#090d0b;color:#e9f1eb;font-family:Arial,sans-serif}
+header{padding:22px 6%;border-bottom:1px solid #202b24;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:23px;font-weight:bold;color:#64ed9b}
+.badge{font-size:12px;color:#64ed9b;border:1px solid #287b4c;padding:7px 12px;border-radius:20px}
+main{max-width:1100px;margin:35px auto;padding:0 20px}
+h1{font-size:30px;margin-bottom:8px}
+.sub{color:#8c9b91;font-size:14px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin:30px 0}
+.card{background:#111a14;border:1px solid #26352b;border-radius:12px;padding:20px}
+.label{color:#9ba99f;font-size:13px}
+.number{font-size:29px;font-weight:bold;margin-top:12px}
+.green{color:#64ed9b}
+.red{color:#ff7373}
+.section{background:#111a14;border:1px solid #26352b;border-radius:12px;padding:22px;margin-bottom:20px}
+h2{font-size:18px;margin-top:0}
+input{width:100%;padding:13px;background:#080e0a;border:1px solid #34463a;border-radius:7px;color:white;margin:9px 0 17px}
+button{background:#64ed9b;color:#07130b;border:0;padding:13px 18px;border-radius:7px;font-weight:bold;cursor:pointer}
+button:hover{opacity:.85}
+.result{margin-top:17px;padding:15px;border-radius:8px;background:#080e0a;line-height:1.6}
+table{width:100%;border-collapse:collapse;font-size:13px}
+td,th{text-align:left;padding:13px 8px;border-bottom:1px solid #26352b}
+th{color:#8c9b91}
+.status{font-weight:bold}
+footer{text-align:center;color:#75847a;padding:30px;font-size:12px}
+@media(max-width:600px){.stats{grid-template-columns:1fr}.number{font-size:25px}main{margin:25px auto}header{padding:18px 5%}table{font-size:11px}td,th{padding:10px 4px}}
+</style>
+</head>
+<body>
+
+<header>
+<div class="logo">AGENTSHIELD</div>
+<div class="badge">NEAR SECURITY PROTOTYPE</div>
+</header>
+
+<main>
+<h1>Security Dashboard</h1>
+<p class="sub">Monitor and protect your AI agent transactions.</p>
+
+<div class="stats">
+<div class="card">
+<div class="label">Total Requests</div>
+<div class="number" id="total">0</div>
+</div>
+<div class="card">
+<div class="label">Approved</div>
+<div class="number green" id="approved">0</div>
+</div>
+<div class="card">
+<div class="label">Blocked</div>
+<div class="number red" id="blocked">0</div>
+</div>
+</div>
+
+<div class="section">
+<h2>Transaction Security Policy</h2>
+<p class="sub">Set the maximum amount your AI agent can transfer.</p>
+<label>Maximum transaction amount (NEAR)</label>
+<input type="number" id="limit" value="10" min="0.01" step="any">
+<label>Approved recipient address</label>
+<input type="text" id="recipient" placeholder="Enter an approved wallet address">
+<button onclick="savePolicy()">Save Security Rules</button>
+<div class="result" id="policyResult">Default security policy: Maximum 10 NEAR per transaction.</div>
+</div>
+
+<div class="section">
+<h2>Test Transaction</h2>
+<p class="sub">Simulate an AI agent requesting a wallet transfer.</p>
+<label>Recipient wallet address</label>
+<input id="address" placeholder="Enter recipient address">
+<label>Amount in NEAR</label>
+<input id="amount" type="number" placeholder="Enter amount" min="0" step="any">
+<button onclick="checkTransaction()">Check Transaction</button>
+<div class="result" id="result">Waiting for transaction request...</div>
+</div>
+
+<div class="section">
+<h2>Transaction History</h2>
+<table>
+<thead>
+<tr><th>Amount</th><th>Recipient</th><th>Decision</th></tr>
+</thead>
+<tbody id="history">
+<tr><td colspan="3">No transactions yet.</td></tr>
+</tbody>
+</table>
+</div>
+</main>
+
+<footer>AGENTSHIELD | Protecting users from unsafe AI transactions.</footer>
+
+<script>
+let approved=0;
+let blocked=0;
+let total=0;
+let maxLimit=10;
+let approvedAddress="";
+
+function savePolicy(){
+maxLimit=Number(document.getElementById("limit").value);
+approvedAddress=document.getElementById("recipient").value.trim();
+if(!Number.isFinite(maxLimit)||maxLimit<=0){
+alert("Enter a valid transaction limit.");
+return;
+}
+document.getElementById("policyResult").textContent=
+"Security rules saved. Maximum transaction: "+maxLimit+" NEAR.";
+}
+
+function checkTransaction(){
+let amount=Number(document.getElementById("amount").value);
+let address=document.getElementById("address").value.trim();
+let result=document.getElementById("result");
+
+if(!address||!Number.isFinite(amount)||amount<=0){
+result.textContent="Please enter a valid recipient and transaction amount.";
+return;
+}
+
+total++;
+let decision="APPROVED";
+let reason="Transaction passed the configured security checks.";
+
+if(amount>maxLimit){
+decision="BLOCKED";
+reason="Transaction exceeds your maximum spending limit of "+maxLimit+" NEAR.";
+}else if(approvedAddress && address!==approvedAddress){
+decision="BLOCKED";
+reason="Recipient is not on your approved address list.";
+}
+
+if(decision==="APPROVED"){
+approved++;
+result.innerHTML="<span class='green'>TRANSACTION APPROVED</span><br>"+reason+"<br><br>This is a simulation. No funds were transferred.";
+}else{
+blocked++;
+result.innerHTML="<span class='red'>TRANSACTION BLOCKED</span><br>"+reason+"<br><br>This is a simulation. No funds were transferred.";
+}
+
+document.getElementById("total").textContent=total;
+document.getElementById("approved").textContent=approved;
+document.getElementById("blocked").textContent=blocked;
+
+let history=document.getElementById("history");
+if(total===1)history.innerHTML="";
+
+let row=history.insertRow(0);
+row.innerHTML="<td>"+amount+" NEAR</td><td>"+address.slice(0,12)+"...</td><td class='status "+(decision==="APPROVED"?"green":"red")+"'>"+decision+"</td>";
+}
+</script>
+</body>
+  </html>
