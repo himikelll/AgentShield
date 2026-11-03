@@ -100,12 +100,14 @@ footer{text-align:center;color:#75847a;padding:30px;font-size:12px}
 let approved=0;
 let blocked=0;
 let total=0;
-let maxLimit=10;
-let approvedAddress="";
+let maxLimit=Number(localStorage.getItem("agentShieldMaxLimit")) || 10;
+let approvedAddress=localStorage.getItem("agentShieldApprovedAddress") || "";
 
 function savePolicy(){
 maxLimit=Number(document.getElementById("limit").value);
+  localStorage.setItem("agentShieldMaxLimit", maxLimit);
 approvedAddress=document.getElementById("recipient").value.trim();
+  localStorage.setItem("agentShieldApprovedAddress", approvedAddress);
 if(!Number.isFinite(maxLimit)||maxLimit<=0){
 alert("Enter a valid transaction limit.");
 return;
